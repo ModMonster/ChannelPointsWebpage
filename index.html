@@ -1,124 +1,117 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <!-- Bootstrap + FontAwesome CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- Bootstrap + FontAwesome CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="main.css">
-</head>
-<body>
-  <div class="container">
-    <span id="snackbar">Command copied!</span>
+<!-- Custom CSS -->
+<link rel="stylesheet" href="main.css">
+<div class="container">
+  <span id="snackbar">Command copied!</span>
 
-    <div class="container p-5 my-4 border rounded">
-      <div class="row gx-5">
-        <div class="col-md-10">
-          <h1>Channel Points</h1>
-          <p>Click on a reward to copy the command. Paste the command into live chat to redeem the reward!</p>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#infoModal">What are channel points?</button>
-        </div>
+  <div class="container p-5 my-4 border rounded">
+    <div class="row gx-5">
+      <div class="col-md-10">
+        <h1>Channel Points</h1>
+        <p>Click on a reward to copy the command. Paste the command into live chat to redeem the reward!</p>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#infoModal">What are channel points?</button>
       </div>
-    </div>
-
-    <!-- Info modal -->
-    <div class="modal fade modal-md" id="infoModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-
-          <!-- Modal Header -->
-          <div class="modal-header">
-            <h4 class="modal-title">About Channel Points</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-
-          <!-- Modal body -->
-          <div class="modal-body">
-            <p>Channel points are a custom system coded by ModMonster for live streams, inspired by Twitch channel points.</p>
-            <p>You earn <strong>10</strong> channel points for every <strong>5</strong> minutes of watching the stream, and can redeem the points for any of the rewards found on this page. <!-- <span class="text-info"><strong>Channel members</strong> earn double the points!</span> --></p> 
-            <p>To redeem one of these rewards, just <strong>click</strong> on the reward to copy the command, and paste it into stream chat. It will be activated shortly after.</p>
-            <p>To check how many points you have, type <code>!points</code> into the stream chat.</p>
-          </div>
-
-          <!-- Modal footer -->
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- TTS modal -->
-    <div class="modal fade modal-md" id="ttsModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-
-          <!-- Modal Header -->
-          <div class="modal-header">
-            <h4 class="modal-title">Text to Speech</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-
-          <!-- Modal body -->
-          <div class="modal-body">
-            <p>To use this reward, you need to type the text you would like to be read on stream.</p>
-            <p><strong>Note:</strong> Due to YouTube chat message character limits, the maximum length of a message is <strong>188</strong> characters.</p>
-            <div class="input-group mb-2">
-              <input type="text" id="tts-input" class="form-control" placeholder="Type your message here" oninput="generateTTSCommand()" maxlength="188">
-              <span class="input-group-text" id="tts-character-limit">188</span>
-              <button class="btn btn-outline-danger" onclick="clearTTS()"><i class="fa fa-trash"></i></button>
-            </div>
-            <p><strong>Command:</strong> <code id="tts-output">Start typing to generate the command!</code></p>
-          </div>
-
-          <!-- Modal footer -->
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="copyTTSCommand()">Copy</button>
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Banner stating points are cheaper now! -->
-    <div class="alert alert-success">
-      <b>Notice: </b>Many channel point rewards have been made cheaper! <small class="text-success">(July 6, 2026)</small>
-    </div>
-
-    <div class="input-group">
-      <span class="input-group-text"><i class="fa fa-search"></i></span>
-      <input type="text" id="search" class="form-control" placeholder="Search" onkeyup="search();">
-    </div>
-
-    <div style="display: none;" id="alert-search-fail" class="alert alert-danger mt-4">Oops, there's nothing here!</div>
-
-    <!-- <div class="row reward-grid">
-      <h2 class="my-4 text-warning"><i class="fa fa-exclamation-circle fa-xs fa-fw"></i> New Effects</h2>
-    </div> -->
-
-    <div class="row reward-grid" id="reward-container">
-      <h2 class="my-4">Sound & Visuals</h2>
-    </div>
-
-    <div class="row reward-grid" id="sfx-container">
-      <h2 class="my-4">Sound Only</h2>
     </div>
   </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Info modal -->
+  <div class="modal fade modal-md" id="infoModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
 
-  <!-- Initialize tooltips -->
-  <script>
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
-  </script>
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">About Channel Points</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
 
-  <!-- Custom JS -->
-  <script src="main.js"></script>
-</body>
-</html>
+        <!-- Modal body -->
+        <div class="modal-body">
+          <p>Channel points are a custom system coded by ModMonster for live streams, inspired by Twitch channel points.</p>
+          <p>You earn <strong>10</strong> channel points for every <strong>5</strong> minutes of watching the stream, and can redeem the points for any of the rewards found on this page. <!-- <span class="text-info"><strong>Channel members</strong> earn double the points!</span> --></p> 
+          <p>To redeem one of these rewards, just <strong>click</strong> on the reward to copy the command, and paste it into stream chat. It will be activated shortly after.</p>
+          <p>To check how many points you have, type <code>!points</code> into the stream chat.</p>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TTS modal -->
+  <div class="modal fade modal-md" id="ttsModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Text to Speech</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <p>To use this reward, you need to type the text you would like to be read on stream.</p>
+          <p><strong>Note:</strong> Due to YouTube chat message character limits, the maximum length of a message is <strong>188</strong> characters.</p>
+          <div class="input-group mb-2">
+            <input type="text" id="tts-input" class="form-control" placeholder="Type your message here" oninput="generateTTSCommand()" maxlength="188">
+            <span class="input-group-text" id="tts-character-limit">188</span>
+            <button class="btn btn-outline-danger" onclick="clearTTS()"><i class="fa fa-trash"></i></button>
+          </div>
+          <p><strong>Command:</strong> <code id="tts-output">Start typing to generate the command!</code></p>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="copyTTSCommand()">Copy</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Banner stating points are cheaper now! -->
+  <div class="alert alert-success">
+    <b>Notice: </b>Many channel point rewards have been made cheaper! <small class="text-success">(July 6, 2026)</small>
+  </div>
+
+  <div class="input-group">
+    <span class="input-group-text"><i class="fa fa-search"></i></span>
+    <input type="text" id="search" class="form-control" placeholder="Search" onkeyup="search();">
+  </div>
+
+  <div style="display: none;" id="alert-search-fail" class="alert alert-danger mt-4">Oops, there's nothing here!</div>
+
+  <!-- <div class="row reward-grid">
+    <h2 class="my-4 text-warning"><i class="fa fa-exclamation-circle fa-xs fa-fw"></i> New Effects</h2>
+  </div> -->
+
+  <div class="row reward-grid" id="reward-container">
+    <h2 class="my-4">Sound & Visuals</h2>
+  </div>
+
+  <div class="row reward-grid" id="sfx-container">
+    <h2 class="my-4">Sound Only</h2>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Initialize tooltips -->
+<script>
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  })
+</script>
+
+<!-- Custom JS -->
+<script src="main.js"></script>
