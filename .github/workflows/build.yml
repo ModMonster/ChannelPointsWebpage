@@ -75,6 +75,15 @@ jobs:
             }
           );
 
+          // Rewrite playSound("...") and playSound('...')
+          html = html.replace(
+            /playSound\(\s*(['"])(?!https?:|\/\/|data:)([^'"]+)\1\s*\)/gi,
+            (_, quote, value) => {
+              const clean = value.replace(/^\.?\//, "");
+              return `playSound(${quote}${RAW}${clean}${quote})`;
+            }
+          );
+
           fs.writeFileSync("compiled.html", html);
           console.log("compiled.html written");
           EOF
