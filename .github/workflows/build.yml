@@ -1,0 +1,86 @@
+name: Build Single HTML
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Compile HTML
+        shell: bash
+        run: |
+          node <<'EOF'
+          const fs = require("fs");
+          const path = require("path");
+
+          const ownerRepo = process.env.GITHUB_REPOSITORY;
+          const branch = process.env.GITHUB_REF_NAME;
+
+          const RAW = `https://raw.githubusercontent.com/${ownerRepo}/${branch}/`;
+
+          let html = fs.readFileSync("index.html", "utf8");
+
+          // Inline CSS
+          html = html.replace(
+            /<link\s+([^>]*?)rel=["']stylesheet["']([^>]*?)href=["']([^"']+)["']([^>]*)>/gi,
+            (_, a, b, href, c) => {
+              if (/^(https?:|\/\/|data:)/i.test(href))
+                return _;
+              const css = fs.readFileSync(path.normalize(href), "utf8");
+              return `<style>\n${css}\n</style>`;
+            }
+          );
+
+          // Inline JS
+          html = html.replace(
+            /<script\s+([^>]*?)src=["']([^"']+)["']([^>]*)><\/script>/gi,
+            (_, a, src, b) => {
+              if (/^(https?:|\/\/|data:)/i.test(src))
+                return _;
+              const js = fs.readFileSync(path.normalize(src), "utf8");
+              return `<script>\n${js}\n</script>`;
+            }
+          );
+
+          // Rewrite remaining local URLs
+          html = html.replace(
+            /(src|href|poster)=["']([^"']+)["']/gi,
+            (_, attr, value) => {
+              if (
+                value.startsWith("http://") ||
+                value.startsWith("https://") ||
+                value.startsWith("//") ||
+                value.startsWith("data:") ||
+                value.startsWith("#") ||
+                value.startsWith("mailto:") ||
+                value.startsWith("javascript:")
+              ) {
+                return `${attr}="${value}"`;
+              }
+
+              const clean = value.replace(/^\.?\//, "");
+
+              return `${attr}="${RAW}${clean}"`;
+            }
+          );
+
+          fs.writeFileSync("compiled.html", html);
+          console.log("compiled.html written");
+          EOF
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-html
+          path: compiled.html
