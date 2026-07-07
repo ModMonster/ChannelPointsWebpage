@@ -148,7 +148,7 @@ function generateRewards() {
           <div class="card-body">
             <h4 class="card-title">${reward.name}</h4>
             <h6 class="card-subtitle mb-2 text-body-secondary"><i class="fa fa-coins fa-fw"></i> ${reward.cost} points</h6>
-            <p class="card-text reward-description" data-replace="Click to copy command"><span>${reward.desc} off</span></p>
+            <p class="card-text reward-description" data-replace="Click to copy command"><span>${reward.desc}</span></p>
           </div>
         </div>
       </div>`).join("");
