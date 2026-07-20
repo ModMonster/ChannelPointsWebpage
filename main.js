@@ -141,37 +141,45 @@ function checkDarkMode() {
 
 checkDarkMode();
 
+function addReward(container, reward) {
+  container.innerHTML += `<div class="card-parent col-md-6 col-lg-4 col-xl-3 my-2">
+    <div class="card" ${
+    reward.cmd === "tts" || reward.cmd === "flowery"
+      ? `data-bs-toggle="modal" data-bs-target="#${reward.cmd}Modal"`
+      : `onclick="copyCommand('${reward.cmd}')"`
+    }>
+      <img class="card-img-top ratio-1x1" src="img/main/${reward.cmd}.png" alt="Reward image">
+      <div class="card-body">
+        <h4 class="card-title">${reward.name}</h4>
+        <h6 class="card-subtitle mb-2 text-body-secondary"><i class="fa fa-coins fa-fw"></i> ${reward.cost} points</h6>
+        <p class="card-text reward-description" data-replace="Click to copy command"><span>${reward.desc}</span></p>
+      </div>
+    </div>
+  </div>`;
+}
+
+function addSfx(container, reward) {
+  container.innerHTML += `<div class="card-parent col-md-6 col-lg-4 col-xl-3 my-2">
+    <div class="card" onclick="copyCommand('${reward.cmd}')">
+      <img class="card-img-top ratio-1x1" src="img/sfx/${reward.cmd}.png" alt="Reward image">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <h4 class="card-title">${reward.name}</h4>
+          <i onclick="playSound('sfx/${reward.cmd}.mp3')" role="button" class="fa fa-volume-low fa-fw float-right my-2" data-bs-toggle="tooltip" title="Preview sound"></i>
+        </div>
+        <h6 class="card-subtitle mb-2 text-body-secondary"><i class="fa fa-coins fa-fw"></i> ${reward.cost} points</h6>
+        <p class="card-text reward-description" data-replace="Click to copy command"><span>${reward.desc}</span></p>
+      </div>
+    </div>
+  </div>`;
+}
+
 function generateRewards() {
   const rewardContainer = document.getElementById("reward-container");
-  rewardContainer.innerHTML += REWARDS.map(reward => `<div class="card-parent col-md-6 col-lg-4 col-xl-3 my-2">
-        <div class="card" ${
-        reward.cmd === "tts" || reward.cmd === "flowery"
-          ? `data-bs-toggle="modal" data-bs-target="#${reward.cmd}Modal"`
-          : `onclick="copyCommand('${reward.cmd}')"`
-        }>
-          <img class="card-img-top ratio-1x1" src="img/main/${reward.cmd}.png" alt="Reward image">
-          <div class="card-body">
-            <h4 class="card-title">${reward.name}</h4>
-            <h6 class="card-subtitle mb-2 text-body-secondary"><i class="fa fa-coins fa-fw"></i> ${reward.cost} points</h6>
-            <p class="card-text reward-description" data-replace="Click to copy command"><span>${reward.desc}</span></p>
-          </div>
-        </div>
-      </div>`).join("");
+  REWARDS.forEach(reward => addReward(rewardContainer, reward));
 
   const sfxContainer = document.getElementById("sfx-container");
-  sfxContainer.innerHTML += SFX_REWARDS.map(reward => `<div class="card-parent col-md-6 col-lg-4 col-xl-3 my-2">
-        <div class="card" onclick="copyCommand('${reward.cmd}')">
-          <img class="card-img-top ratio-1x1" src="img/sfx/${reward.cmd}.png" alt="Reward image">
-          <div class="card-body">
-            <div class="d-flex justify-content-between">
-              <h4 class="card-title">${reward.name}</h4>
-              <i onclick="playSound('sfx/${reward.cmd}.mp3')" role="button" class="fa fa-volume-low fa-fw float-right my-2" data-bs-toggle="tooltip" title="Preview sound"></i>
-            </div>
-            <h6 class="card-subtitle mb-2 text-body-secondary"><i class="fa fa-coins fa-fw"></i> ${reward.cost} points</h6>
-            <p class="card-text reward-description" data-replace="Click to copy command"><span>${reward.desc}</span></p>
-          </div>
-        </div>
-      </div>`).join("");
+  SFX_REWARDS.forEach(reward => addSfx(sfxContainer, reward));
 
   const newContainer = document.getElementById("new-container");
 
@@ -180,43 +188,16 @@ function generateRewards() {
   }
 
   for (id of NEW_REWARDS) {
-    console.log(id)
-    for (reward of SFX_REWARDS) {
-      console.log(reward.cmd)
+    for (reward of REWARDS) {
       if (id == reward.cmd) {
-        newContainer.innerHTML += `<div class="card-parent col-md-6 col-lg-4 col-xl-3 my-2">
-          <div class="card" onclick="copyCommand('${reward.cmd}')">
-            <img class="card-img-top ratio-1x1" src="img/sfx/${reward.cmd}.png" alt="Reward image">
-            <div class="card-body">
-              <div class="d-flex justify-content-between">
-                <h4 class="card-title">${reward.name}</h4>
-                <i onclick="playSound('sfx/${reward.cmd}.mp3')" role="button" class="fa fa-volume-low fa-fw float-right my-2" data-bs-toggle="tooltip" title="Preview sound"></i>
-              </div>
-              <h6 class="card-subtitle mb-2 text-body-secondary"><i class="fa fa-coins fa-fw"></i> ${reward.cost} points</h6>
-              <p class="card-text reward-description" data-replace="Click to copy command"><span>${reward.desc}</span></p>
-            </div>
-          </div>
-        </div>`;
+        addReward(newContainer, reward);
         break;
       }
     }
 
-    for (reward of REWARDS) {
+    for (reward of SFX_REWARDS) {
       if (id == reward.cmd) {
-        newContainer.innerHTML += `<div class="card-parent col-md-6 col-lg-4 col-xl-3 my-2">
-          <div class="card" ${
-          reward.cmd === "tts"
-            ? 'data-bs-toggle="modal" data-bs-target="#ttsModal"'
-            : `onclick="copyCommand('${reward.cmd}')"`
-          }>
-            <img class="card-img-top ratio-1x1" src="img/main/${reward.cmd}.png" alt="Reward image">
-            <div class="card-body">
-              <h4 class="card-title">${reward.name}</h4>
-              <h6 class="card-subtitle mb-2 text-body-secondary"><i class="fa fa-coins fa-fw"></i> ${reward.cost} points</h6>
-              <p class="card-text reward-description" data-replace="Click to copy command"><span>${reward.desc}</span></p>
-            </div>
-          </div>
-        </div>`;
+        addSfx(newContainer, reward);
         break;
       }
     }
