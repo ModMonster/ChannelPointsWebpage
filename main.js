@@ -1,8 +1,13 @@
+const NEW_REWARDS = [
+  "flowery"
+]
+
 const REWARDS = [
   {cmd: "144p", name: "144p", desc: "RTX off", cost: 875},
   {cmd: "barrelroll", name: "Do a Barrel Roll", desc: "Wheeeeee!", cost: 500},
   {cmd: "drugs", name: "Drugs", desc: "Mario had too many mushrooms", cost: 875},
   {cmd: "fisheye", name: "Fisheye", desc: "Mmmmm funny camera", cost: 625},
+  {cmd: "flowery", name: "Flowery :3", desc: "HERE I COME SANFRANDISCOOOO", cost: 375},
   {cmd: "miichannel", name: "Mii Channel", desc: "Very distracting. Very effective.", cost: 1125},
   {cmd: "muted", name: "Muted", desc: "Mutes my mic for 10 seconds", cost: 2500},
   {cmd: "nicethrow", name: "Nice Throw", desc: "Strike!", cost: 625},
@@ -61,32 +66,32 @@ function showSnackBar() {
   }
 }
 
-function generateTTSCommand() {
-  var input = document.getElementById("tts-input");
-  var output = document.getElementById("tts-output");
-  var characterLimit = document.getElementById("tts-character-limit");
+function generateTTSCommand(id, limit) {
+  var input = document.getElementById(id + "-input");
+  var output = document.getElementById(id + "-output");
+  var characterLimit = document.getElementById(id + "-character-limit");
 
-  output.innerHTML = "!redeem tts " + input.value;
+  output.innerHTML = `!redeem ${id} ${input.value}`;
 
   // character limit
-  var limit = 188 - input.value.length;
-  characterLimit.innerHTML = limit;
+  var limitRemaining = limit - input.value.length;
+  characterLimit.innerHTML = limitRemaining;
   
-  if (limit <= 0) {
+  if (limitRemaining <= 0) {
     characterLimit.classList.add("text-warning");
   } else {
     characterLimit.classList.remove("text-warning");
   }
 }
 
-function copyTTSCommand() {
-  var input = document.getElementById("tts-input").value;
-  copyCommand("tts " + input);
+function copyTTSCommand(id) {
+  var input = document.getElementById(id + "-input").value;
+  copyCommand(`${id} ${input}`);
 }
 
-function clearTTS() {
-  document.getElementById("tts-input").value = "";
-  generateTTSCommand();
+function clearTTS(id, limit) {
+  document.getElementById(id + "-input").value = "";
+  generateTTSCommand(id, limit);
 }
 
 function search() {
@@ -140,8 +145,8 @@ function generateRewards() {
   const rewardContainer = document.getElementById("reward-container");
   rewardContainer.innerHTML += REWARDS.map(reward => `<div class="card-parent col-md-6 col-lg-4 col-xl-3 my-2">
         <div class="card" ${
-        reward.cmd === "tts"
-          ? 'data-bs-toggle="modal" data-bs-target="#ttsModal"'
+        reward.cmd === "tts" || reward.cmd === "flowery"
+          ? `data-bs-toggle="modal" data-bs-target="#${reward.cmd}Modal"`
           : `onclick="copyCommand('${reward.cmd}')"`
         }>
           <img class="card-img-top ratio-1x1" src="img/main/${reward.cmd}.png" alt="Reward image">
@@ -167,6 +172,55 @@ function generateRewards() {
           </div>
         </div>
       </div>`).join("");
+
+  const newContainer = document.getElementById("new-container");
+
+  if (NEW_REWARDS.length > 0) {
+    newContainer.innerHTML += `<h2 class="my-4 text-warning"><i class="fa fa-exclamation-circle fa-xs fa-fw"></i> New Effects</h2>`;
+  }
+
+  for (id of NEW_REWARDS) {
+    console.log(id)
+    for (reward of SFX_REWARDS) {
+      console.log(reward.cmd)
+      if (id == reward.cmd) {
+        newContainer.innerHTML += `<div class="card-parent col-md-6 col-lg-4 col-xl-3 my-2">
+          <div class="card" onclick="copyCommand('${reward.cmd}')">
+            <img class="card-img-top ratio-1x1" src="img/sfx/${reward.cmd}.png" alt="Reward image">
+            <div class="card-body">
+              <div class="d-flex justify-content-between">
+                <h4 class="card-title">${reward.name}</h4>
+                <i onclick="playSound('sfx/${reward.cmd}.mp3')" role="button" class="fa fa-volume-low fa-fw float-right my-2" data-bs-toggle="tooltip" title="Preview sound"></i>
+              </div>
+              <h6 class="card-subtitle mb-2 text-body-secondary"><i class="fa fa-coins fa-fw"></i> ${reward.cost} points</h6>
+              <p class="card-text reward-description" data-replace="Click to copy command"><span>${reward.desc}</span></p>
+            </div>
+          </div>
+        </div>`;
+        break;
+      }
+    }
+
+    for (reward of REWARDS) {
+      if (id == reward.cmd) {
+        newContainer.innerHTML += `<div class="card-parent col-md-6 col-lg-4 col-xl-3 my-2">
+          <div class="card" ${
+          reward.cmd === "tts"
+            ? 'data-bs-toggle="modal" data-bs-target="#ttsModal"'
+            : `onclick="copyCommand('${reward.cmd}')"`
+          }>
+            <img class="card-img-top ratio-1x1" src="img/main/${reward.cmd}.png" alt="Reward image">
+            <div class="card-body">
+              <h4 class="card-title">${reward.name}</h4>
+              <h6 class="card-subtitle mb-2 text-body-secondary"><i class="fa fa-coins fa-fw"></i> ${reward.cost} points</h6>
+              <p class="card-text reward-description" data-replace="Click to copy command"><span>${reward.desc}</span></p>
+            </div>
+          </div>
+        </div>`;
+        break;
+      }
+    }
+  }
 }
 
 generateRewards();

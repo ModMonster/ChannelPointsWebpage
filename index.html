@@ -61,16 +61,48 @@
           <p>To use this reward, you need to type the text you would like to be read on stream.</p>
           <p><strong>Note:</strong> Due to YouTube chat message character limits, the maximum length of a message is <strong>188</strong> characters.</p>
           <div class="input-group mb-2">
-            <input type="text" id="tts-input" class="form-control" placeholder="Type your message here" oninput="generateTTSCommand()" maxlength="188">
+            <input type="text" id="tts-input" class="form-control" placeholder="Type your message here" oninput="generateTTSCommand('tts', 188)" maxlength="188">
             <span class="input-group-text" id="tts-character-limit">188</span>
-            <button class="btn btn-outline-danger" onclick="clearTTS()"><i class="fa fa-trash"></i></button>
+            <button class="btn btn-outline-danger" onclick="clearTTS('tts', 188)"><i class="fa fa-trash"></i></button>
           </div>
           <p><strong>Command:</strong> <code id="tts-output">Start typing to generate the command!</code></p>
         </div>
 
         <!-- Modal footer -->
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="copyTTSCommand()">Copy</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="copyTTSCommand('tts')">Copy</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flowery modal -->
+  <div class="modal fade modal-md" id="floweryModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Flowery :3</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <p>To use this reward, you need to type the text you would like to be shown in the text box.</p>
+          <p><strong>Note:</strong> Due to the size of Deltarune's text boxes, there is a limit of <strong>70</strong> characters.</p>
+          <div class="input-group mb-2">
+            <input type="text" id="flowery-input" class="form-control" placeholder="Type your message here" oninput="generateTTSCommand('flowery', 70)" maxlength="70">
+            <span class="input-group-text" id="flowery-character-limit">70</span>
+            <button class="btn btn-outline-danger" onclick="clearTTS('flowery', 70)"><i class="fa fa-trash"></i></button>
+          </div>
+          <p><strong>Command:</strong> <code id="flowery-output">Start typing to generate the command!</code></p>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="copyTTSCommand('flowery')">Copy</button>
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
@@ -89,9 +121,9 @@
 
   <div style="display: none;" id="alert-search-fail" class="alert alert-danger mt-4">Oops, there's nothing here!</div>
 
-  <!-- <div class="row reward-grid">
-    <h2 class="my-4 text-warning"><i class="fa fa-exclamation-circle fa-xs fa-fw"></i> New Effects</h2>
-  </div> -->
+  <div class="row reward-grid" id="new-container">
+    
+  </div>
 
   <div class="row reward-grid" id="reward-container">
     <h2 class="my-4">Sound & Visuals</h2>
